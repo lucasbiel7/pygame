@@ -75,8 +75,10 @@ bloco2.center = (random.randint(160, 290), random.randint(-5, 0))
 # [TODO] carregar a musica de fundo e deixá-la em execução
 pygame.mixer.init();
 pygame.mixer.music.load('top-Gear-Soundtrack.mp3')
+
+
 # Comentei a música para conseguir ouvir música enquanto desenvolve
-pygame.mixer.music.play()
+# pygame.mixer.music.play()
 
 
 # Funções para o jogo
@@ -137,12 +139,12 @@ def buildTreeScenario():
     global t1, t2
     trees_images_rect[t1].move_ip(0, 1)
     trees_images_rect[t2].move_ip(0, 1)
-    if trees_images_rect[t1].centery - trees_images_rect[t1].width > W_HEIGHT:
+    if trees_images_rect[t1].centery > W_HEIGHT + 20:
         t1 = random.randint(0, 2)
         trees_images_rect[t1].center = (450, -1)
-    if trees_images_rect[t2].centery > W_HEIGHT:
+    if trees_images_rect[t2].centery > W_HEIGHT + 20:
         t2 = random.randint(3, 4)
-        trees_images_rect[t2].center = (410, -300)
+        trees_images_rect[t2].center = (410, -1)
     # desenha os objetos em posicoes atualizadas (não alterar)
     SCREEN.blit(trees_images[t1], trees_images_rect[t1])
     SCREEN.blit(trees_images[t2], trees_images_rect[t2])
