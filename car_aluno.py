@@ -171,12 +171,17 @@ def buildCarControls():
     car_rect.move_ip(x, y)
 
 
+def buildScenario():
+    pygame.draw.rect(SCREEN, WHITE, (0, 0, W_WIDTH, W_HEIGHT))
+    desenharAreaVerde()
+    desenharPistas()
+
+
 while True:
     # [DONE] Capturar o evento de fechar o jogo na interface.
     handleQuitGame()
     # [DONE] desenhar a imagem de fundo. Utilize os valores numéricos da tela e das pistas.
-    desenharAreaVerde()
-    desenharPistas()
+    buildScenario()
     # [DONE mover as arvores em 1 pixel. Reposicionar quando as arvores saem da Interface.
     buildTreeScenario()
     # [DONE] Capturar uma tecla pressionada para mover o carrinho. Usar as teclas
@@ -184,12 +189,6 @@ while True:
 
     buildCar()
 
-    # # UP, DOWN, LEFT e RIGHT (setinhas). Para mover o carrinho use a velocidade na
-    # # coordenada correta.
-    # if pygame.key.get_focused():
-    #    key = pygame.key.get_pressed()
-    #
-    #
     # # [TODO] mover os carrinhos oponentes
     #
     #
