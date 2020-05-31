@@ -1,4 +1,5 @@
 import random
+import sys
 
 import pygame
 
@@ -124,9 +125,12 @@ def desenharPistas():
 # Código para quando o usuário apertar no botão de fechar quitar do jogo
 #
 def handleQuitGame():
+    # A musica deve ser finalizada antes do fechamento do jogo.
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
+            pygame.mixer.music.stop();
             pygame.quit()
+            sys.exit(0)
 
 
 def buildTreeScenario():
@@ -146,21 +150,13 @@ def buildTreeScenario():
 
 # CODIGO PRINCIPAL
 while True:
+    # [DONE] Capturar o evento de fechar o jogo na interface.
     handleQuitGame()
-    # [TODO] desenhar a imagem de fundo. Utilize os valores numéricos da tela e das pistas.
+    # [DONE] desenhar a imagem de fundo. Utilize os valores numéricos da tela e das pistas.
     desenharAreaVerde()
     desenharPistas()
-    # [TODO mover as arvores em 1 pixel. Reposicionar quando as arvores saem da Interface.
+    # [DONE mover as arvores em 1 pixel. Reposicionar quando as arvores saem da Interface.
     buildTreeScenario()
-    #
-    # # [TODO] Capturar o evento de fechar o jogo na interface.
-    # # A musica deve ser finalizada antes do fechamento do jogo.
-    # for event in pygame.event.get():
-    #    if event.type == pygame.QUIT:
-    #
-    #       pygame.quit()
-    #       sys.exit()
-    #
     # # [TODO] Capturar uma tecla pressionada para mover o carrinho. Usar as teclas
     # # UP, DOWN, LEFT e RIGHT (setinhas). Para mover o carrinho use a velocidade na
     # # coordenada correta.
