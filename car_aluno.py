@@ -151,6 +151,26 @@ def buildTreeScenario():
 
 
 # CODIGO PRINCIPAL
+def buildCar():
+    SCREEN.blit(car, car_rect)
+
+
+def buildCarControls():
+    x = 0
+    y = 0
+    if pygame.key.get_focused():
+        key = pygame.key.get_pressed()
+        if key[pygame.K_UP]:
+            y -= 1
+        if key[pygame.K_DOWN]:
+            y += 1
+        if key[pygame.K_LEFT]:
+            x -= 1
+        if key[pygame.K_RIGHT]:
+            x += 1
+    car_rect.move_ip(x, y)
+
+
 while True:
     # [DONE] Capturar o evento de fechar o jogo na interface.
     handleQuitGame()
@@ -159,7 +179,11 @@ while True:
     desenharPistas()
     # [DONE mover as arvores em 1 pixel. Reposicionar quando as arvores saem da Interface.
     buildTreeScenario()
-    # # [TODO] Capturar uma tecla pressionada para mover o carrinho. Usar as teclas
+    # [DONE] Capturar uma tecla pressionada para mover o carrinho. Usar as teclas
+    buildCarControls()
+
+    buildCar()
+
     # # UP, DOWN, LEFT e RIGHT (setinhas). Para mover o carrinho use a velocidade na
     # # coordenada correta.
     # if pygame.key.get_focused():
@@ -193,7 +217,5 @@ while True:
     #
     # SCREEN.blit(car_opponet_1, bloco1)
     # SCREEN.blit(car_opponet_2, bloco2)
-    #
-    # SCREEN.blit(car, car_rect)
     pygame.display.update()
     clock.tick(FPS)
