@@ -66,13 +66,13 @@ trees_images_rect[t2].center = (410, -300)
 # define posicoes iniciais para os oponentes (não alterar)
 # Repare que a coordenada ``y'' é negativa. Isso permite
 # iniciar aos carrinhos em uma posição fora da tela.
-bloco1 = car_opponet_1.get_rect()
-bloco2 = car_opponet_2.get_rect()
+oponente_1_rect = car_opponet_1.get_rect()
+oponente_2_rect = car_opponet_2.get_rect()
 
-bloco1.center = (random.randint(70, 160), random.randint(-5, 0))
-bloco2.center = (random.randint(160, 290), random.randint(-5, 0))
+oponente_1_rect.center = (random.randint(70, 160), random.randint(-5, 0))
+oponente_2_rect.center = (random.randint(160, 290), random.randint(-5, 0))
 
-# [TODO] carregar a musica de fundo e deixá-la em execução
+# [DONE] carregar a musica de fundo e deixá-la em execução
 pygame.mixer.init();
 pygame.mixer.music.load('top-Gear-Soundtrack.mp3')
 
@@ -85,7 +85,7 @@ pygame.mixer.music.load('top-Gear-Soundtrack.mp3')
 #
 
 def captura_colisao_oponentes():
-    global bloco1, bloco2
+    global oponente_1_rect, oponente_2_rect
     """ [TODO] Detectar colisao entre os oponentes ('blocos'). Em caso de colisao,
         afastar um carrinho para o lado sem deixa-lo sair das pistas.
     """
@@ -101,7 +101,7 @@ def captura_colisao():
 
 
 def reinicia_oponente():
-    global bloco1, bloco2, score
+    global oponente_1_rect, oponente_2_rect, score
     """
     [TODO] Se um oponente sai da tela, renicia-se a sua posicao aleatoriamente na tela
     """
@@ -110,7 +110,7 @@ def reinicia_oponente():
 #
 # Desenha as áreas verdes
 #
-def desenharAreaVerde():
+def desenhar_area_verde():
     pygame.draw.rect(SCREEN, GREEN, (0, 0, FAIXAS[0][0], W_HEIGHT))
     pygame.draw.rect(SCREEN, GREEN, (FAIXAS[2][1], 0, W_WIDTH - FAIXAS[2][1], W_HEIGHT))
 
@@ -118,7 +118,7 @@ def desenharAreaVerde():
 #
 # Desenha as pistas dos carros
 #
-def desenharPistas():
+def desenhar_pistas():
     for pista in FAIXAS:
         pygame.draw.rect(SCREEN, GREY, (pista[0], 0, pista[1] - pista[0], W_HEIGHT))
 
@@ -126,7 +126,7 @@ def desenharPistas():
 #
 # Código para quando o usuário apertar no botão de fechar quitar do jogo
 #
-def handleQuitGame():
+def handle_quit_game():
     # A musica deve ser finalizada antes do fechamento do jogo.
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -135,7 +135,7 @@ def handleQuitGame():
             sys.exit(0)
 
 
-def buildTreeScenario():
+def build_tree_scenario():
     global t1, t2
     trees_images_rect[t1].move_ip(0, 1)
     trees_images_rect[t2].move_ip(0, 1)
@@ -151,47 +151,56 @@ def buildTreeScenario():
 
 
 # CODIGO PRINCIPAL
-def buildCar():
+def build_car():
     SCREEN.blit(car, car_rect)
 
 
+#
+# Controles do carro do usuário com validações para ele não sair da tela
+#
 def buildCarControls():
     x = 0
     y = 0
     if pygame.key.get_focused():
         key = pygame.key.get_pressed()
-        widthHalf = car_rect.width / 2
-        heightHalf = car_rect.height / 2
-        if key[pygame.K_UP] and car_rect.centery - 1 - heightHalf > 0:
+        half_width = car_rect.width / 2
+        half_height = car_rect.height / 2
+        if key[pygame.K_UP] and car_rect.centery - 1 - half_height > 0:
             y -= 1
-        if key[pygame.K_DOWN] and car_rect.centery - 1 + heightHalf < W_HEIGHT:
+        if key[pygame.K_DOWN] and car_rect.centery - 1 + half_height < W_HEIGHT:
             y += 1
-        if key[pygame.K_LEFT] and (car_rect.centerx - 1 - widthHalf) > FAIXAS[0][0]:
+        if key[pygame.K_LEFT] and (car_rect.centerx - 1 - half_width) > FAIXAS[0][0]:
             x -= 1
-        if key[pygame.K_RIGHT] and (car_rect.centerx + 1 + widthHalf) < FAIXAS[2][1]:
+        if key[pygame.K_RIGHT] and (car_rect.centerx + 1 + half_width) < FAIXAS[2][1]:
             x += 1
     car_rect.move_ip(x, y)
 
 
 def buildScenario():
     pygame.draw.rect(SCREEN, WHITE, (0, 0, W_WIDTH, W_HEIGHT))
-    desenharAreaVerde()
-    desenharPistas()
+    desenhar_area_verde()
+    desenhar_pistas()
+
+
+def build_opponents():
+    SCREEN.blit(car_opponet_1, oponente_1_rect)
+    SCREEN.blit(car_opponet_2, oponente_2_rect)
 
 
 while True:
     # [DONE] Capturar o evento de fechar o jogo na interface.
-    handleQuitGame()
+    handle_quit_game()
     # [DONE] desenhar a imagem de fundo. Utilize os valores numéricos da tela e das pistas.
     buildScenario()
     # [DONE mover as arvores em 1 pixel. Reposicionar quando as arvores saem da Interface.
-    buildTreeScenario()
+    build_tree_scenario()
     # [DONE] Capturar uma tecla pressionada para mover o carrinho. Usar as teclas
     buildCarControls()
 
-    buildCar()
+    build_car()
 
-    # # [TODO] mover os carrinhos oponentes
+    # [TODO] mover os carrinhos oponentes
+    build_opponents()
     #
     #
     # # [TODO] detectar colisão
@@ -216,7 +225,6 @@ while True:
     # text_surf_p = font_score.render(str(score), True, BLACK)
     # SCREEN.blit(text_surf_p, (W_WIDTH-100, 20))
     #
-    # SCREEN.blit(car_opponet_1, bloco1)
-    # SCREEN.blit(car_opponet_2, bloco2)
+
     pygame.display.update()
     clock.tick(FPS)
