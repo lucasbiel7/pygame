@@ -4,7 +4,7 @@ import sys
 import pygame
 
 # definicao de constantes para o jogo
-FPS = 80
+FPS = 60
 W_SIZE = W_WIDTH, W_HEIGHT = 500, 600
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
@@ -69,20 +69,25 @@ trees_images_rect[t2].center = (410, -300)
 oponente_1_rect = car_opponet_1.get_rect()
 oponente_2_rect = car_opponet_2.get_rect()
 
-oponente_1_rect.center = (random.randint(70, 160), random.randint(-5, 0))
-oponente_2_rect.center = (random.randint(160, 290), random.randint(-5, 0))
-
 # [DONE] carregar a musica de fundo e deixá-la em execução
-pygame.mixer.init();
+pygame.mixer.init()
 pygame.mixer.music.load('top-Gear-Soundtrack.mp3')
 
 
 # Comentei a música para conseguir ouvir música enquanto desenvolve
 # pygame.mixer.music.play()
 
-
 # Funções para o jogo
 #
+
+
+def restart_opponent(rect, x_start, x_end):
+    rect.center = (random.randint(x_start, x_end), random.randint(-5, 0))
+
+
+restart_opponent(oponente_1_rect, 70, 160)
+restart_opponent(oponente_2_rect, 160, 300)
+
 
 def captura_colisao_oponentes():
     global oponente_1_rect, oponente_2_rect
@@ -100,11 +105,16 @@ def captura_colisao():
     """
 
 
+def out_height_screen(rect):
+    return rect.centery > W_HEIGHT
+
+
 def reinicia_oponente():
     global oponente_1_rect, oponente_2_rect, score
-    """
-    [TODO] Se um oponente sai da tela, renicia-se a sua posicao aleatoriamente na tela
-    """
+    if out_height_screen(oponente_1_rect):
+        restart_opponent(oponente_1_rect, 70, 160)
+    if out_height_screen(oponente_2_rect):
+        restart_opponent(oponente_2_rect, 160, 290)
 
 
 #
@@ -165,14 +175,14 @@ def buildCarControls():
         key = pygame.key.get_pressed()
         half_width = car_rect.width / 2
         half_height = car_rect.height / 2
-        if key[pygame.K_UP] and car_rect.centery - 1 - half_height > 0:
-            y -= 1
+        if key[pygame.K_UP] and car_rect.centery - SPEED - half_height > 0:
+            y -= SPEED
         if key[pygame.K_DOWN] and car_rect.centery - 1 + half_height < W_HEIGHT:
-            y += 1
+            y += SPEED
         if key[pygame.K_LEFT] and (car_rect.centerx - 1 - half_width) > FAIXAS[0][0]:
-            x -= 1
+            x -= SPEED
         if key[pygame.K_RIGHT] and (car_rect.centerx + 1 + half_width) < FAIXAS[2][1]:
-            x += 1
+            x += SPEED
     car_rect.move_ip(x, y)
 
 
@@ -183,6 +193,8 @@ def buildScenario():
 
 
 def build_opponents():
+    oponente_1_rect.move_ip(SPEED1)
+    oponente_2_rect.move_ip(SPEED2)
     SCREEN.blit(car_opponet_1, oponente_1_rect)
     SCREEN.blit(car_opponet_2, oponente_2_rect)
 
@@ -199,6 +211,9 @@ while True:
 
     build_car()
 
+    # [DONE] reiniciar oponentes quando
+    reinicia_oponente()
+
     # [TODO] mover os carrinhos oponentes
     build_opponents()
     #
@@ -206,8 +221,6 @@ while True:
     # # [TODO] detectar colisão
     # captura_colisao_oponentes()
     #
-    # # [TODO] reiniciar oponentes quando
-    # reinicia_oponente()
 
     # [TODO] a cada intervalo de pontos a velocidade dos oponentes eh aumentada
 
