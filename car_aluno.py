@@ -74,6 +74,7 @@ bloco2.center = (random.randint(160, 290), random.randint(-5, 0))
 # [TODO] carregar a musica de fundo e deixá-la em execução
 pygame.mixer.init();
 pygame.mixer.music.load('top-Gear-Soundtrack.mp3')
+# Comentei a música para conseguir ouvir música enquanto desenvolve
 pygame.mixer.music.play()
 
 
@@ -111,6 +112,9 @@ def desenharAreaVerde():
     pygame.draw.rect(SCREEN, GREEN, (FAIXAS[2][1], 0, W_WIDTH - FAIXAS[2][1], W_HEIGHT))
 
 
+#
+# Desenha as pistas dos carros
+#
 def desenharPistas():
     for pista in FAIXAS:
         pygame.draw.rect(SCREEN, GREY, (pista[0], 0, pista[1] - pista[0], W_HEIGHT))
@@ -125,6 +129,21 @@ def handleQuitGame():
             pygame.quit()
 
 
+def buildTreeScenario():
+    global t1, t2
+    trees_images_rect[t1].move_ip(0, 1)
+    trees_images_rect[t2].move_ip(0, 1)
+    if trees_images_rect[t1].centery - trees_images_rect[t1].width > W_HEIGHT:
+        t1 = random.randint(0, 2)
+        trees_images_rect[t1].center = (450, -1)
+    if trees_images_rect[t2].centery > W_HEIGHT:
+        t2 = random.randint(3, 4)
+        trees_images_rect[t2].center = (410, -300)
+    # desenha os objetos em posicoes atualizadas (não alterar)
+    SCREEN.blit(trees_images[t1], trees_images_rect[t1])
+    SCREEN.blit(trees_images[t2], trees_images_rect[t2])
+
+
 # CODIGO PRINCIPAL
 while True:
     handleQuitGame()
@@ -132,14 +151,7 @@ while True:
     desenharAreaVerde()
     desenharPistas()
     # [TODO mover as arvores em 1 pixel. Reposicionar quando as arvores saem da Interface.
-    # trees_images_rect[t1].move_ip(t1., 2)
-    # trees_images_rect[t2].move_ip()
-    # if():
-    #    t1 = random.randint(0, 2)
-    #    trees_images_rect[t1].center = (450, -1)
-    # if():
-    #    t2 = random.randint(3, 4)
-    #    trees_images_rect[t2].center = (410, -300)
+    buildTreeScenario()
     #
     # # [TODO] Capturar o evento de fechar o jogo na interface.
     # # A musica deve ser finalizada antes do fechamento do jogo.
@@ -176,9 +188,7 @@ while True:
     #    SCREEN.blit(font_score.render(str(game_over), True, RED), (50, W_HEIGHT//4))
     #    car =
     #
-    # # desenha os objetos em posicoes atualizadas (não alterar)
-    # SCREEN.blit(trees_images[t1], trees_images_rect[t1])
-    # SCREEN.blit(trees_images[t2], trees_images_rect[t2])
+
     #
     # text_surf_p = font_score.render(str(score), True, BLACK)
     # SCREEN.blit(text_surf_p, (W_WIDTH-100, 20))
