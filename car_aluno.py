@@ -161,9 +161,10 @@ def buildCarControls():
     if pygame.key.get_focused():
         key = pygame.key.get_pressed()
         widthHalf = car_rect.width / 2
-        if key[pygame.K_UP]:
+        heightHalf = car_rect.height / 2
+        if key[pygame.K_UP] and car_rect.centery - 1 - heightHalf > 0:
             y -= 1
-        if key[pygame.K_DOWN]:
+        if key[pygame.K_DOWN] and car_rect.centery - 1 + heightHalf < W_HEIGHT:
             y += 1
         if key[pygame.K_LEFT] and (car_rect.centerx - 1 - widthHalf) > FAIXAS[0][0]:
             x -= 1
