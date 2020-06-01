@@ -105,7 +105,7 @@ def captura_colisao():
     de colisão, retornar True e parar o movimento de todos os elementos. Sem colisão detectada,
     então manter o jogo em execução e retornar False.
     """
-    
+
 
 def out_height_screen(rect):
     return rect.centery > W_HEIGHT
@@ -142,7 +142,7 @@ def handle_quit_game():
     # A musica deve ser finalizada antes do fechamento do jogo.
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            pygame.mixer.music.stop();
+            pygame.mixer.music.stop()
             pygame.quit()
             sys.exit(0)
 
