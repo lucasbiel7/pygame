@@ -82,7 +82,9 @@ pygame.mixer.music.load('top-Gear-Soundtrack.mp3')
 
 
 def restart_opponent(rect, x_start, x_end):
+    global score
     rect.center = (random.randint(x_start, x_end), random.randint(-5, 0))
+    score += 1
 
 
 restart_opponent(oponente_1_rect, 70, 160)
@@ -103,7 +105,7 @@ def captura_colisao():
     de colisão, retornar True e parar o movimento de todos os elementos. Sem colisão detectada,
     então manter o jogo em execução e retornar False.
     """
-
+    
 
 def out_height_screen(rect):
     return rect.centery > W_HEIGHT
@@ -149,10 +151,10 @@ def build_tree_scenario():
     global t1, t2
     trees_images_rect[t1].move_ip(0, 1)
     trees_images_rect[t2].move_ip(0, 1)
-    if trees_images_rect[t1].centery > W_HEIGHT + 20:
+    if out_height_screen(trees_images_rect[t1]):
         t1 = random.randint(0, 2)
         trees_images_rect[t1].center = (450, -1)
-    if trees_images_rect[t2].centery > W_HEIGHT + 20:
+    if out_height_screen(trees_images_rect[t2]):
         t2 = random.randint(3, 4)
         trees_images_rect[t2].center = (410, -1)
     # desenha os objetos em posicoes atualizadas (não alterar)
@@ -175,6 +177,7 @@ def buildCarControls():
         key = pygame.key.get_pressed()
         half_width = car_rect.width / 2
         half_height = car_rect.height / 2
+        # [DONE] manter o carrinho do jogador na tela. Use valores numéricos da tela e das pistas.
         if key[pygame.K_UP] and car_rect.centery - SPEED - half_height > 0:
             y -= SPEED
         if key[pygame.K_DOWN] and car_rect.centery - 1 + half_height < W_HEIGHT:
@@ -214,17 +217,15 @@ while True:
     # [DONE] reiniciar oponentes quando
     reinicia_oponente()
 
-    # [TODO] mover os carrinhos oponentes
+    # [DONE] mover os carrinhos oponentes
     build_opponents()
     #
     #
-    # # [TODO] detectar colisão
+    # [TODO] detectar colisão
     # captura_colisao_oponentes()
     #
 
     # [TODO] a cada intervalo de pontos a velocidade dos oponentes eh aumentada
-
-    # [TODO] manter o carrinho do jogador na tela. Use valores numéricos da tela e das pistas.
 
     # [TODO] detectar colisao entre o carrinho do jogador e algum carrinho oponente.
     # Em caso de colisão mostrar a mensagem ''Fim de Jogo'' e carregar a imagem
@@ -238,6 +239,5 @@ while True:
     # text_surf_p = font_score.render(str(score), True, BLACK)
     # SCREEN.blit(text_surf_p, (W_WIDTH-100, 20))
     #
-
     pygame.display.update()
     clock.tick(FPS)
