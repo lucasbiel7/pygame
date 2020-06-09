@@ -124,18 +124,31 @@ def calcularDistancia(start_y_1, end_y_1, start_y_2, end_y_2):
 
 def captura_colisao_oponentes():
     global oponente_rect_red, oponente_blue_rect
-    start_x_1 = oponente_rect_red.x
-    end_x_1 = oponente_rect_red.x + oponente_rect_red.width
-    start_y_1 = oponente_rect_red.y
-    end_y_1 = oponente_rect_red.y + oponente_rect_red.height
-    start_x_2 = oponente_blue_rect.x
-    end_x_2 = oponente_blue_rect.x + oponente_blue_rect.width
-    start_y_2 = oponente_blue_rect.y
-    end_y_2 = oponente_blue_rect.y + oponente_blue_rect.height
-    if validar_range(start_x_1, start_x_2, end_x_2) or validar_range(end_x_1, start_x_2, end_x_2):
-        oponente_rect_red.move_ip(
-            calcularDeslocamento(start_x_1, end_x_1, start_x_2, end_x_2) / calcularDistancia(start_y_1, end_y_1,
-                                                                                             start_y_2, end_y_2), 0)
+    start_x_red = oponente_rect_red.x
+    end_x_red = oponente_rect_red.x + oponente_rect_red.width
+    start_y_red = oponente_rect_red.y
+    end_y_red = oponente_rect_red.y + oponente_rect_red.height
+    start_x_blue = oponente_blue_rect.x
+    end_x_blue = oponente_blue_rect.x + oponente_blue_rect.width
+    start_y_blue = oponente_blue_rect.y
+    end_y_blue = oponente_blue_rect.y + oponente_blue_rect.height
+    if start_x_red > start_x_blue:
+        validar_e_mover(end_x_red, end_x_blue, end_y_red, end_y_blue, oponente_blue_rect, start_x_red, start_x_blue,
+                        start_y_red, start_y_blue)
+    else:
+        validar_e_mover(end_x_blue, end_x_red, end_y_blue, end_y_red, oponente_rect_red, start_x_blue, start_x_red,
+                        start_y_blue, start_y_red)
+
+
+def validar_e_mover(end_x_blue, end_x_red, end_y_blue, end_y_red, rect, start_x_blue, start_x_red,
+                    start_y_blue, start_y_red):
+    if validar_range(start_x_red, start_x_blue, end_x_blue) or validar_range(end_x_red, start_x_blue, end_x_blue):
+        rect.move_ip(
+            calcularDeslocamento(start_x_red, end_x_red, start_x_blue, end_x_blue) / calcularDistancia(start_y_red,
+                                                                                                       end_y_red,
+                                                                                                       start_y_blue,
+                                                                                                       end_y_blue),
+            0)
 
 
 # Verifica se o número está entre o outro carro
