@@ -105,7 +105,8 @@ def calcularDeslocamento(start_x_1, end_x_1, start_x_2, end_x_2):
         # Caso o carro 2 esteja mais a esquerda que o carro 1
         #                 |  1   |
         #         |    2   |
-        return -(end_x_2 - start_x_1)
+        result = end_x_2 - start_x_1
+        return -result if start_x_1 > 150 else result
 
 
 def calcularDistancia(start_y_1, end_y_1, start_y_2, end_y_2):
