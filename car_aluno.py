@@ -106,7 +106,7 @@ def calcularDeslocamento(start_x_1, end_x_1, start_x_2, end_x_2):
         #                 |  1   |
         #         |    2   |
         result = end_x_2 - start_x_1
-        return -result if start_x_1 > 150 else result
+        return -result if start_x_1 > W_WIDTH / 2 else result
 
 
 def calcularDistancia(start_y_1, end_y_1, start_y_2, end_y_2):
