@@ -38,10 +38,16 @@ score = 0
 game_over = "GAME OVER"
 font_score = pygame.font.Font('freesansbold.ttf', 50)
 
-# [TODO] carregar as imagens dos carrinhos [DONE]
+# [DONE] carregar as imagens dos carrinhos
 car = pygame.image.load("white_car.png")
-car_opponet_1 = pygame.image.load("red_car.png")
-car_opponet_2 = pygame.image.load("blue_car.png")
+car_opponet_red = pygame.image.load("red_car.png")
+car_opponet_blue = pygame.image.load("blue_car.png")
+
+# define posicoes iniciais para os oponentes (não alterar)
+# Repare que a coordenada ``y'' é negativa. Isso permite
+# iniciar aos carrinhos em uma posição fora da tela.
+oponente_rect_red = car_opponet_red.get_rect()
+oponente_blue_rect = car_opponet_blue.get_rect()
 
 # carrega as imagens das árvores, escolhendo-as aleatoriamente. Repare que apenas
 # duas árvores são visíveis na tela a cada instante (não alterar).
@@ -63,12 +69,6 @@ car_rect.center = (W_WIDTH // 2, W_HEIGHT - 100)
 trees_images_rect[t1].center = (450, -1)
 trees_images_rect[t2].center = (410, -300)
 
-# define posicoes iniciais para os oponentes (não alterar)
-# Repare que a coordenada ``y'' é negativa. Isso permite
-# iniciar aos carrinhos em uma posição fora da tela.
-oponente_1_rect = car_opponet_1.get_rect()
-oponente_2_rect = car_opponet_2.get_rect()
-
 # [DONE] carregar a musica de fundo e deixá-la em execução
 pygame.mixer.init()
 pygame.mixer.music.load('top-Gear-Soundtrack.mp3')
@@ -87,15 +87,62 @@ def restart_opponent(rect, x_start, x_end):
     score += 1
 
 
-restart_opponent(oponente_1_rect, 70, 160)
-restart_opponent(oponente_2_rect, 160, 300)
+restart_opponent(oponente_rect_red, 70, 300)
+restart_opponent(oponente_blue_rect, 70, 300)
+
+
+def calcularDeslocamento(start_x_1, end_x_1, start_x_2, end_x_2):
+    pass
+    # Valida se o carro 1 está mais a esquerda
+    # Caso verdadeiro calcula a quantidade de deslocamento que deve ser realizado para evitar a colisão
+    # O calculo leva a seguinte ideia
+    #   |  1   |
+    #         |    2   |
+    #
+    if start_x_1 < start_x_2:
+        return start_x_2 - end_x_1
+    else:
+        # Caso o carro 2 esteja mais a esquerda que o carro 1
+        #                 |  1   |
+        #         |    2   |
+        return -(end_x_2 - start_x_1)
+
+
+def calcularDistancia(start_y_1, end_y_1, start_y_2, end_y_2):
+    pass
+    if start_y_1 > start_y_2:
+        # Carrinho 1 está mais em baixo
+        resultado = start_y_1 - end_y_2
+    else:
+        resultado = start_y_2 - end_y_1
+
+    if resultado <= 0:
+        return 1
+    else:
+        return resultado
 
 
 def captura_colisao_oponentes():
-    global oponente_1_rect, oponente_2_rect
-    """ [TODO] Detectar colisao entre os oponentes ('blocos'). Em caso de colisao,
-        afastar um carrinho para o lado sem deixa-lo sair das pistas.
-    """
+    global oponente_rect_red, oponente_blue_rect
+    start_x_1 = oponente_rect_red.x
+    end_x_1 = oponente_rect_red.x + oponente_rect_red.width
+    start_y_1 = oponente_rect_red.y
+    end_y_1 = oponente_rect_red.y + oponente_rect_red.height
+    start_x_2 = oponente_blue_rect.x
+    end_x_2 = oponente_blue_rect.x + oponente_blue_rect.width
+    start_y_2 = oponente_blue_rect.y
+    end_y_2 = oponente_blue_rect.y + oponente_blue_rect.height
+    if validar_range(start_x_1, start_x_2, end_x_2) or validar_range(end_x_1, start_x_2, end_x_2):
+        oponente_rect_red.move_ip(
+            calcularDeslocamento(start_x_1, end_x_1, start_x_2, end_x_2) / calcularDistancia(start_y_1, end_y_1,
+                                                                                             start_y_2, end_y_2), 0)
+
+
+# Verifica se o número está entre o outro carro
+def validar_range(numero, inicio, fim):
+    if numero >= inicio and inicio <= fim:
+        return True
+    return False
 
 
 def captura_colisao():
@@ -112,11 +159,11 @@ def out_height_screen(rect):
 
 
 def reinicia_oponente():
-    global oponente_1_rect, oponente_2_rect, score
-    if out_height_screen(oponente_1_rect):
-        restart_opponent(oponente_1_rect, 70, 160)
-    if out_height_screen(oponente_2_rect):
-        restart_opponent(oponente_2_rect, 160, 290)
+    global oponente_rect_red, oponente_blue_rect, score
+    if out_height_screen(oponente_rect_red):
+        restart_opponent(oponente_rect_red, 70, 300)
+    if out_height_screen(oponente_blue_rect):
+        restart_opponent(oponente_blue_rect, 70, 300)
 
 
 #
@@ -196,10 +243,10 @@ def buildScenario():
 
 
 def build_opponents():
-    oponente_1_rect.move_ip(SPEED1)
-    oponente_2_rect.move_ip(SPEED2)
-    SCREEN.blit(car_opponet_1, oponente_1_rect)
-    SCREEN.blit(car_opponet_2, oponente_2_rect)
+    oponente_rect_red.move_ip(SPEED1)
+    oponente_blue_rect.move_ip(SPEED2)
+    SCREEN.blit(car_opponet_red, oponente_rect_red)
+    SCREEN.blit(car_opponet_blue, oponente_blue_rect)
 
 
 while True:
@@ -222,7 +269,7 @@ while True:
     #
     #
     # [TODO] detectar colisão
-    # captura_colisao_oponentes()
+    captura_colisao_oponentes()
     #
 
     # [TODO] a cada intervalo de pontos a velocidade dos oponentes eh aumentada
