@@ -81,14 +81,15 @@ pygame.mixer.music.load('top-Gear-Soundtrack.mp3')
 #
 
 
-def restart_opponent(rect, x_start, x_end):
+def restart_opponent(rect, x_start, x_end, plus_score=True):
     global score
     rect.center = (random.randint(x_start, x_end), random.randint(-5, 0))
-    score += 1
+    if plus_score:
+        score += 1
 
 
-restart_opponent(oponente_rect_red, 70, 300)
-restart_opponent(oponente_blue_rect, 70, 300)
+restart_opponent(oponente_rect_red, 70, 300, False)
+restart_opponent(oponente_blue_rect, 70, 300, False)
 
 
 def calcularDeslocamento(start_x_1, end_x_1, start_x_2, end_x_2):
@@ -263,6 +264,11 @@ def build_opponents():
     SCREEN.blit(car_opponet_blue, oponente_blue_rect)
 
 
+def build_score():
+    text_surf_p = font_score.render(str(score), True, BLACK)
+    SCREEN.blit(text_surf_p, (W_WIDTH - 100, 20))
+
+
 while True:
     # [DONE] Capturar o evento de fechar o jogo na interface.
     handle_quit_game()
@@ -297,8 +303,7 @@ while True:
     #
 
     #
-    # text_surf_p = font_score.render(str(score), True, BLACK)
-    # SCREEN.blit(text_surf_p, (W_WIDTH-100, 20))
+    build_score()
     #
     pygame.display.update()
     clock.tick(FPS)
