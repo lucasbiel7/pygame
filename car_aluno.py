@@ -17,7 +17,7 @@ SPEED1 = [0, 2]  # velocidade de movimento do carrinho oponente 1
 SPEED2 = [0, 3]  # velocidade de movimento do carrinho oponente 1
 SPEED_LEVEL = 0.1  # Taxa de aumento da velocidade dos carrinhos
 # próximo nível (valor sugerido: pode ser alterado conforme a sua lógica)
-LEVEL = 10
+LEVEL = 1
 # Usar essa quantidade de atualização das velocidades dos carrinhos oponentes.
 # Isto é, a cada 10 carrinhos ultrapassados aumentar a velocidade destes.
 LEVEL_FREQ = 10
@@ -258,8 +258,8 @@ def buildScenario():
 
 
 def build_opponents():
-    oponente_rect_red.move_ip(SPEED1)
-    oponente_blue_rect.move_ip(SPEED2)
+    oponente_rect_red.move_ip(SPEED1[0], SPEED1[1] * (SPEED_LEVEL * LEVEL + 1))
+    oponente_blue_rect.move_ip(SPEED2[0], SPEED2[1] * (SPEED_LEVEL * LEVEL + 1))
     SCREEN.blit(car_opponet_red, oponente_rect_red)
     SCREEN.blit(car_opponet_blue, oponente_blue_rect)
 
@@ -288,11 +288,13 @@ while True:
     build_opponents()
     #
     #
-    # [TODO] detectar colisão
+    # [DONE] detectar colisão entre oponentes e calcula o desvio que deve ser realizado no espaço de tempo
+    # que possui
     captura_colisao_oponentes()
     #
 
-    # [TODO] a cada intervalo de pontos a velocidade dos oponentes eh aumentada
+    #
+    LEVEL = score / LEVEL_FREQ
 
     # [TODO] detectar colisao entre o carrinho do jogador e algum carrinho oponente.
     # Em caso de colisão mostrar a mensagem ''Fim de Jogo'' e carregar a imagem
