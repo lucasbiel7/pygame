@@ -237,7 +237,7 @@ def build_car():
 def buildCarControls():
     x = 0
     y = 0
-    if pygame.key.get_focused():
+    if pygame.key.get_focused() and not LOSE:
         key = pygame.key.get_pressed()
         half_width = car_rect.width / 2
         half_height = car_rect.height / 2
