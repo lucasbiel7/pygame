@@ -37,7 +37,7 @@ clock = pygame.time.Clock()
 score = 0
 game_over = "GAME OVER"
 font_score = pygame.font.Font('freesansbold.ttf', 50)
-
+LOSE = False
 # [DONE] carregar as imagens dos carrinhos
 car = pygame.image.load("white_car.png")
 car_opponet_red = pygame.image.load("red_car.png")
@@ -48,7 +48,8 @@ car_opponet_blue = pygame.image.load("blue_car.png")
 # iniciar aos carrinhos em uma posição fora da tela.
 oponente_rect_red = car_opponet_red.get_rect()
 oponente_blue_rect = car_opponet_blue.get_rect()
-
+# Lista para verificar colisão
+LISTA_OPONENTES = [oponente_rect_red, oponente_blue_rect]
 # carrega as imagens das árvores, escolhendo-as aleatoriamente. Repare que apenas
 # duas árvores são visíveis na tela a cada instante (não alterar).
 trees_images = []
@@ -155,7 +156,7 @@ def validar_e_mover(end_x_blue, end_x_red, end_y_blue, end_y_red, rect, start_x_
 
 # Verifica se o número está entre o outro carro
 def validar_range(numero, inicio, fim):
-    if numero >= inicio and inicio <= fim:
+    if inicio <= numero <= fim:
         return True
     return False
 
@@ -211,14 +212,15 @@ def handle_quit_game():
 
 def build_tree_scenario():
     global t1, t2
-    trees_images_rect[t1].move_ip(0, 1)
-    trees_images_rect[t2].move_ip(0, 1)
-    if out_height_screen(trees_images_rect[t1]):
-        t1 = random.randint(0, 2)
-        trees_images_rect[t1].center = (450, -1)
-    if out_height_screen(trees_images_rect[t2]):
-        t2 = random.randint(3, 4)
-        trees_images_rect[t2].center = (410, -1)
+    if not LOSE:
+        trees_images_rect[t1].move_ip(0, 1)
+        trees_images_rect[t2].move_ip(0, 1)
+        if out_height_screen(trees_images_rect[t1]):
+            t1 = random.randint(0, 2)
+            trees_images_rect[t1].center = (450, -1)
+        if out_height_screen(trees_images_rect[t2]):
+            t2 = random.randint(3, 4)
+            trees_images_rect[t2].center = (410, -1)
     # desenha os objetos em posicoes atualizadas (não alterar)
     SCREEN.blit(trees_images[t1], trees_images_rect[t1])
     SCREEN.blit(trees_images[t2], trees_images_rect[t2])
@@ -258,8 +260,9 @@ def buildScenario():
 
 
 def build_opponents():
-    oponente_rect_red.move_ip(SPEED1[0], SPEED1[1] * (SPEED_LEVEL * LEVEL + 1))
-    oponente_blue_rect.move_ip(SPEED2[0], SPEED2[1] * (SPEED_LEVEL * LEVEL + 1))
+    if not LOSE:
+        oponente_rect_red.move_ip(SPEED1[0], SPEED1[1] * (SPEED_LEVEL * LEVEL + 1))
+        oponente_blue_rect.move_ip(SPEED2[0], SPEED2[1] * (SPEED_LEVEL * LEVEL + 1))
     SCREEN.blit(car_opponet_red, oponente_rect_red)
     SCREEN.blit(car_opponet_blue, oponente_blue_rect)
 
@@ -267,6 +270,26 @@ def build_opponents():
 def build_score():
     text_surf_p = font_score.render(str(score), True, BLACK)
     SCREEN.blit(text_surf_p, (W_WIDTH - 100, 20))
+
+
+def colisao(meu_carro, oponente):
+    pass
+    if ((validar_range(meu_carro.x, oponente.x, oponente.x + oponente.width) or
+         validar_range(meu_carro.x + meu_carro.width, oponente.x, oponente.x + oponente.width))
+            and
+            (validar_range(meu_carro.y, oponente.y, oponente.y + oponente.height) or
+             validar_range(meu_carro.y + meu_carro.height, oponente.y, oponente.y + oponente.height))
+    ):
+        return True
+    return False
+
+
+def validar_colisao_oponentes():
+    pass
+    for oponente in LISTA_OPONENTES:
+        if colisao(car_rect, oponente):
+            return True
+    return False
 
 
 while True:
@@ -296,14 +319,13 @@ while True:
     #
     LEVEL = score / LEVEL_FREQ
 
-    # [TODO] detectar colisao entre o carrinho do jogador e algum carrinho oponente.
+    # [DONE] detectar colisao entre o carrinho do jogador e algum carrinho oponente.
     # Em caso de colisão mostrar a mensagem ''Fim de Jogo'' e carregar a imagem
     # de carrinho batido para o carrinho do jogador.
-    # if()):
-    #    SCREEN.blit(font_score.render(str(game_over), True, RED), (50, W_HEIGHT//4))
-    #    car =
-    #
-
+    if validar_colisao_oponentes():
+        SCREEN.blit(font_score.render(str(game_over), True, RED), (50, W_HEIGHT // 4))
+        car = pygame.image.load("white_car_2.png")
+        LOSE = True
     #
     build_score()
     #
