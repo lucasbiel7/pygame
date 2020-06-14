@@ -74,12 +74,12 @@ trees_images_rect[t2].center = (410, -300)
 pygame.mixer.init()
 pygame.mixer.music.load('top-Gear-Soundtrack.mp3')
 
-
 # Comentei a música para conseguir ouvir música enquanto desenvolve
 # pygame.mixer.music.play()
 
 # Funções para o jogo
 #
+RANGE_STREET = [70, 300]
 
 
 def restart_opponent(rect, x_start, x_end, plus_score=True):
@@ -89,8 +89,8 @@ def restart_opponent(rect, x_start, x_end, plus_score=True):
         score += 1
 
 
-restart_opponent(oponente_rect_red, 70, 300, False)
-restart_opponent(oponente_blue_rect, 70, 300, False)
+restart_opponent(oponente_rect_red, RANGE_STREET[0], RANGE_STREET[1], False)
+restart_opponent(oponente_blue_rect, RANGE_STREET[0], RANGE_STREET[1], False)
 
 
 def calcularDeslocamento(start_x_1, end_x_1, start_x_2, end_x_2):
@@ -177,9 +177,9 @@ def out_height_screen(rect):
 def reinicia_oponente():
     global oponente_rect_red, oponente_blue_rect, score
     if out_height_screen(oponente_rect_red):
-        restart_opponent(oponente_rect_red, 70, 300)
+        restart_opponent(oponente_rect_red, RANGE_STREET[0], RANGE_STREET[1])
     if out_height_screen(oponente_blue_rect):
-        restart_opponent(oponente_blue_rect, 70, 300)
+        restart_opponent(oponente_blue_rect, RANGE_STREET[0], RANGE_STREET[1])
 
 
 #
