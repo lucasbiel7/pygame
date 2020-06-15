@@ -11,7 +11,7 @@ WHITE = (255, 255, 255)
 RED = (255, 0, 0)
 GREEN = (20, 255, 140)
 GREY = (210, 210, 210)
-W_BGCOLOR = GREEN
+
 SPEED = 5  # velocidade de movimento do carrinho do jogador
 SPEED1 = [0, 2]  # velocidade de movimento do carrinho oponente 1
 SPEED2 = [0, 3]  # velocidade de movimento do carrinho oponente 1
@@ -37,7 +37,7 @@ clock = pygame.time.Clock()
 score = 0
 game_over = "GAME OVER"
 font_score = pygame.font.Font('freesansbold.ttf', 50)
-LOSE = False
+loser = False
 # [DONE] carregar as imagens dos carrinhos
 car = pygame.image.load("white_car.png")
 car_opponet_red = pygame.image.load("red_car.png")
@@ -102,12 +102,17 @@ def calcularDeslocamento(start_x_1, end_x_1, start_x_2, end_x_2):
     #         |    2   |
     #
     if start_x_1 < start_x_2:
+        if start_x_1 < RANGE_STREET[0] + 50:
+            return end_x_2 - start_x_1 + 1
         return start_x_2 - end_x_1
     else:
         # Caso o carro 2 esteja mais a esquerda que o carro 1
         #                 |  1   |
         #         |    2   |
         result = end_x_2 - start_x_1
+        if start_x_1 < RANGE_STREET[0] + 50:
+            return end_x_2 - start_x_1 + 1
+
         return -result if start_x_1 > W_WIDTH / 2 else result
 
 
@@ -135,7 +140,7 @@ def captura_colisao_oponentes():
     end_x_blue = oponente_blue_rect.x + oponente_blue_rect.width
     start_y_blue = oponente_blue_rect.y
     end_y_blue = oponente_blue_rect.y + oponente_blue_rect.height
-    if start_x_red > start_x_blue:
+    if start_x_red > start_x_blue > RANGE_STREET[0] + oponente_blue_rect.width:
         validar_e_mover(end_x_red, end_x_blue, end_y_red, end_y_blue, oponente_blue_rect, start_x_red, start_x_blue,
                         start_y_red, start_y_blue)
     else:
@@ -159,15 +164,6 @@ def validar_range(numero, inicio, fim):
     if inicio <= numero <= fim:
         return True
     return False
-
-
-def captura_colisao():
-    global SPEED, SPEED1, SPEED2
-    """
-    [TODO] Detectar colisao entre o carrinho e cada um de seus oponentes ('blocos'). Em caso
-    de colisão, retornar True e parar o movimento de todos os elementos. Sem colisão detectada,
-    então manter o jogo em execução e retornar False.
-    """
 
 
 def out_height_screen(rect):
@@ -212,7 +208,7 @@ def handle_quit_game():
 
 def build_tree_scenario():
     global t1, t2
-    if not LOSE:
+    if not loser:
         trees_images_rect[t1].move_ip(0, 1)
         trees_images_rect[t2].move_ip(0, 1)
         if out_height_screen(trees_images_rect[t1]):
@@ -234,10 +230,10 @@ def build_car():
 #
 # Controles do carro do usuário com validações para ele não sair da tela
 #
-def buildCarControls():
+def build_car_controls():
     x = 0
     y = 0
-    if pygame.key.get_focused() and not LOSE:
+    if pygame.key.get_focused() and not loser:
         key = pygame.key.get_pressed()
         half_width = car_rect.width / 2
         half_height = car_rect.height / 2
@@ -253,14 +249,14 @@ def buildCarControls():
     car_rect.move_ip(x, y)
 
 
-def buildScenario():
+def build_scenario():
     pygame.draw.rect(SCREEN, WHITE, (0, 0, W_WIDTH, W_HEIGHT))
     desenhar_area_verde()
     desenhar_pistas()
 
 
 def build_opponents():
-    if not LOSE:
+    if not loser:
         oponente_rect_red.move_ip(SPEED1[0], SPEED1[1] * (SPEED_LEVEL * LEVEL + 1))
         oponente_blue_rect.move_ip(SPEED2[0], SPEED2[1] * (SPEED_LEVEL * LEVEL + 1))
     SCREEN.blit(car_opponet_red, oponente_rect_red)
@@ -284,7 +280,7 @@ def colisao(meu_carro, oponente):
     return False
 
 
-def validar_colisao_oponentes():
+def captura_colisao():
     pass
     for oponente in LISTA_OPONENTES:
         if colisao(car_rect, oponente):
@@ -296,11 +292,11 @@ while True:
     # [DONE] Capturar o evento de fechar o jogo na interface.
     handle_quit_game()
     # [DONE] desenhar a imagem de fundo. Utilize os valores numéricos da tela e das pistas.
-    buildScenario()
+    build_scenario()
     # [DONE mover as arvores em 1 pixel. Reposicionar quando as arvores saem da Interface.
     build_tree_scenario()
     # [DONE] Capturar uma tecla pressionada para mover o carrinho. Usar as teclas
-    buildCarControls()
+    build_car_controls()
 
     build_car()
 
@@ -309,23 +305,24 @@ while True:
 
     # [DONE] mover os carrinhos oponentes
     build_opponents()
+
     #
     #
     # [DONE] detectar colisão entre oponentes e calcula o desvio que deve ser realizado no espaço de tempo
     # que possui
     captura_colisao_oponentes()
-    #
 
+    #
     #
     LEVEL = score / LEVEL_FREQ
 
     # [DONE] detectar colisao entre o carrinho do jogador e algum carrinho oponente.
     # Em caso de colisão mostrar a mensagem ''Fim de Jogo'' e carregar a imagem
     # de carrinho batido para o carrinho do jogador.
-    if validar_colisao_oponentes():
+    if captura_colisao():
         SCREEN.blit(font_score.render(str(game_over), True, RED), (50, W_HEIGHT // 4))
         car = pygame.image.load("white_car_2.png")
-        LOSE = True
+        loser = True
     #
     build_score()
     #
