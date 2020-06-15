@@ -75,7 +75,7 @@ pygame.mixer.init()
 pygame.mixer.music.load('top-Gear-Soundtrack.mp3')
 
 # Comentei a música para conseguir ouvir música enquanto desenvolve
-# pygame.mixer.music.play()
+pygame.mixer.music.play()
 
 # Funções para o jogo
 #
@@ -322,6 +322,7 @@ while True:
     if captura_colisao():
         SCREEN.blit(font_score.render(str(game_over), True, RED), (50, W_HEIGHT // 4))
         car = pygame.image.load("white_car_2.png")
+        pygame.mixer.music.pause()
         loser = True
     #
     build_score()
