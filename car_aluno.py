@@ -11,6 +11,7 @@ WHITE = (255, 255, 255)
 RED = (255, 0, 0)
 GREEN = (20, 255, 140)
 GREY = (210, 210, 210)
+PURPLE = (97, 52, 219)
 
 SPEED = 5  # velocidade de movimento do carrinho do jogador
 SPEED1 = [0, 2]  # velocidade de movimento do carrinho oponente 1
@@ -37,6 +38,7 @@ clock = pygame.time.Clock()
 score = 0
 game_over = "GAME OVER"
 font_score = pygame.font.Font('freesansbold.ttf', 50)
+font_restart = pygame.font.Font('freesansbold.ttf', 16)
 loser = False
 # [DONE] carregar as imagens dos carrinhos
 car = pygame.image.load("white_car.png")
@@ -93,10 +95,20 @@ def restart_opponent(rect, x_start, x_end, plus_score=True):
     return pygame.image.load(cars[random.randint(0, len(cars) - 1)])
 
 
-car_opponent_red = restart_opponent(oponente_rect_red, RANGE_STREET[0], RANGE_STREET[1], False)
-car_opponent_red = pygame.transform.scale(car_opponent_red, (50, 100))
-car_opponent_blue = restart_opponent(oponente_blue_rect, RANGE_STREET[0], RANGE_STREET[1], False)
-car_opponent_blue = pygame.transform.scale(car_opponent_blue, (50, 100))
+def start_game():
+    global car_opponent_red, car_opponent_blue, car, loser, score
+    pygame.mixer.music.play()
+    car_opponent_red = restart_opponent(oponente_rect_red, RANGE_STREET[0], RANGE_STREET[1], False)
+    car_opponent_red = pygame.transform.scale(car_opponent_red, (50, 100))
+    car_opponent_blue = restart_opponent(oponente_blue_rect, RANGE_STREET[0], RANGE_STREET[1], False)
+    car_opponent_blue = pygame.transform.scale(car_opponent_blue, (50, 100))
+    car = pygame.image.load("white_car.png")
+    car = pygame.transform.scale(car, (50, 100))
+    loser = False
+    score = 0
+
+
+start_game()
 
 
 def calcularDeslocamento(start_x_1, end_x_1, start_x_2, end_x_2):
@@ -241,8 +253,8 @@ def build_car():
 def build_car_controls():
     x = 0
     y = 0
+    key = pygame.key.get_pressed()
     if pygame.key.get_focused() and not loser:
-        key = pygame.key.get_pressed()
         half_width = car_rect.width / 2
         half_height = car_rect.height / 2
         # [DONE] manter o carrinho do jogador na tela. Use valores numéricos da tela e das pistas.
@@ -254,6 +266,10 @@ def build_car_controls():
             x -= SPEED
         if key[pygame.K_RIGHT] and (car_rect.centerx + 1 + half_width) < FAIXAS[2][1]:
             x += SPEED
+    else:
+        if key[pygame.K_SPACE]:
+            start_game()
+
     car_rect.move_ip(x, y)
 
 
@@ -329,6 +345,8 @@ while True:
     # de carrinho batido para o carrinho do jogador.
     if captura_colisao():
         SCREEN.blit(font_score.render(str(game_over), True, RED), (50, W_HEIGHT // 4))
+        font_restart.set_italic(True)
+        SCREEN.blit(font_restart.render("Aperte espaço para recomeçar!", True, PURPLE), (80, W_HEIGHT // 4 + 75))
         car = pygame.image.load("white_car_2.png")
         pygame.mixer.music.pause()
         loser = True
