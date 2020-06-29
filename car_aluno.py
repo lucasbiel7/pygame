@@ -37,7 +37,7 @@ clock = pygame.time.Clock()
 # define os textos para 'pontos' e mensagem do 'termino' do jogo (não alterar)
 score = 0
 game_over = "Fim de Jogo"
-game_score = "PONTUAÇÃO"
+game_score = "SCORE"
 game_level = "LEVEL"
 font_score = pygame.font.Font('freesansbold.ttf', 50)
 font_restart = pygame.font.Font('freesansbold.ttf', 16)
