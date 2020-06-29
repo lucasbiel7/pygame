@@ -83,9 +83,6 @@ trees_images_rect[t2].center = (410, -300)
 pygame.mixer.init()
 pygame.mixer.music.load('top-Gear-Soundtrack.mp3')
 
-# Comentei a música para conseguir ouvir música enquanto desenvolve
-# pygame.mixer.music.play()
-
 # Funções para o jogo
 #
 RANGE_STREET = [70, 300]
@@ -101,6 +98,7 @@ def restart_opponent(rect, x_start, x_end, plus_score=True):
 
 def start_game():
     global car_opponent_red, car_opponent_blue, car, loser, score
+    # Comentei a música para conseguir ouvir música enquanto desenvolve
     pygame.mixer.music.play()
     car_opponent_red = restart_opponent(oponente_rect_red, RANGE_STREET[0], RANGE_STREET[1], False)
     car_opponent_red = pygame.transform.scale(car_opponent_red, (50, 100))
