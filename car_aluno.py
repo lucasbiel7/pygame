@@ -1,3 +1,8 @@
+#
+# @author Lucas Gabriel de Souza Dutra - 11724814
+# @author Paulo Henrique dos Santos - 11722528
+#
+#
 import random
 import sys
 
