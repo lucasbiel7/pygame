@@ -44,14 +44,17 @@ font_default = pygame.font.Font('freesansbold.ttf', 25)
 loser = False
 # [DONE] carregar as imagens dos carrinhos
 car = pygame.image.load("white_car.png")
-car_opponet_red = pygame.image.load("red_car.png")
-car_opponet_blue = pygame.image.load("blue_car.png")
+car = pygame.transform.scale(car, (50, 100))
+
+cars = ["red_car.png", "blue_car.png", "caminhonete.png", "ferrari.png"]
+car_opponent_red = pygame.image.load("red_car.png")
+car_opponent_blue = pygame.image.load("blue_car.png")
 
 # define posicoes iniciais para os oponentes (não alterar)
 # Repare que a coordenada ``y'' é negativa. Isso permite
 # iniciar aos carrinhos em uma posição fora da tela.
-oponente_rect_red = car_opponet_red.get_rect()
-oponente_blue_rect = car_opponet_blue.get_rect()
+oponente_rect_red = car_opponent_red.get_rect()
+oponente_blue_rect = car_opponent_blue.get_rect()
 # Lista para verificar colisão
 LISTA_OPONENTES = [oponente_rect_red, oponente_blue_rect]
 # carrega as imagens das árvores, escolhendo-as aleatoriamente. Repare que apenas
@@ -91,10 +94,13 @@ def restart_opponent(rect, x_start, x_end, plus_score=True):
     rect.center = (random.randint(x_start, x_end), random.randint(-5, 0))
     if plus_score:
         score += 1
+    return pygame.image.load(cars[random.randint(0, len(cars) - 1)])
 
 
-restart_opponent(oponente_rect_red, RANGE_STREET[0], RANGE_STREET[1], False)
-restart_opponent(oponente_blue_rect, RANGE_STREET[0], RANGE_STREET[1], False)
+car_opponent_red = restart_opponent(oponente_rect_red, RANGE_STREET[0], RANGE_STREET[1], False)
+car_opponent_red = pygame.transform.scale(car_opponent_red, (50, 100))
+car_opponent_blue = restart_opponent(oponente_blue_rect, RANGE_STREET[0], RANGE_STREET[1], False)
+car_opponent_blue = pygame.transform.scale(car_opponent_blue, (50, 100))
 
 
 def calcularDeslocamento(start_x_1, end_x_1, start_x_2, end_x_2):
@@ -175,11 +181,13 @@ def out_height_screen(rect):
 
 
 def reinicia_oponente():
-    global oponente_rect_red, oponente_blue_rect, score
+    global oponente_rect_red, oponente_blue_rect, score, car_opponent_blue, car_opponent_red
     if out_height_screen(oponente_rect_red):
-        restart_opponent(oponente_rect_red, RANGE_STREET[0], RANGE_STREET[1])
+        car_opponent_red = restart_opponent(oponente_rect_red, RANGE_STREET[0], RANGE_STREET[1])
+        car_opponent_red = pygame.transform.scale(car_opponent_red, (50, 100))
     if out_height_screen(oponente_blue_rect):
-        restart_opponent(oponente_blue_rect, RANGE_STREET[0], RANGE_STREET[1])
+        car_opponent_blue = restart_opponent(oponente_blue_rect, RANGE_STREET[0], RANGE_STREET[1])
+        car_opponent_blue = pygame.transform.scale(car_opponent_blue, (50, 100))
 
 
 #
@@ -263,8 +271,8 @@ def build_opponents():
     if not loser:
         oponente_rect_red.move_ip(SPEED1[0], SPEED1[1] * (SPEED_LEVEL * LEVEL + 1))
         oponente_blue_rect.move_ip(SPEED2[0], SPEED2[1] * (SPEED_LEVEL * LEVEL + 1))
-    SCREEN.blit(car_opponet_red, oponente_rect_red)
-    SCREEN.blit(car_opponet_blue, oponente_blue_rect)
+    SCREEN.blit(car_opponent_red, oponente_rect_red)
+    SCREEN.blit(car_opponent_blue, oponente_blue_rect)
 
 
 def build_score():
