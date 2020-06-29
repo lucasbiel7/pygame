@@ -11,6 +11,7 @@ WHITE = (255, 255, 255)
 RED = (255, 0, 0)
 GREEN = (57, 173, 31)
 GREY = (210, 210, 210)
+PURPLE = (97, 52, 219)
 
 SPEED = 5  # velocidade de movimento do carrinho do jogador
 SPEED1 = [0, 2]  # velocidade de movimento do carrinho oponente 1
@@ -39,6 +40,7 @@ game_over = "GAME OVER"
 game_score = "SCORE"
 game_level = "LEVEL"
 font_score = pygame.font.Font('freesansbold.ttf', 50)
+font_restart = pygame.font.Font('freesansbold.ttf', 16)
 font_level = pygame.font.Font('freesansbold.ttf', 25)
 font_default = pygame.font.Font('freesansbold.ttf', 25)
 loser = False
@@ -97,10 +99,20 @@ def restart_opponent(rect, x_start, x_end, plus_score=True):
     return pygame.image.load(cars[random.randint(0, len(cars) - 1)])
 
 
-car_opponent_red = restart_opponent(oponente_rect_red, RANGE_STREET[0], RANGE_STREET[1], False)
-car_opponent_red = pygame.transform.scale(car_opponent_red, (50, 100))
-car_opponent_blue = restart_opponent(oponente_blue_rect, RANGE_STREET[0], RANGE_STREET[1], False)
-car_opponent_blue = pygame.transform.scale(car_opponent_blue, (50, 100))
+def start_game():
+    global car_opponent_red, car_opponent_blue, car, loser, score
+    pygame.mixer.music.play()
+    car_opponent_red = restart_opponent(oponente_rect_red, RANGE_STREET[0], RANGE_STREET[1], False)
+    car_opponent_red = pygame.transform.scale(car_opponent_red, (50, 100))
+    car_opponent_blue = restart_opponent(oponente_blue_rect, RANGE_STREET[0], RANGE_STREET[1], False)
+    car_opponent_blue = pygame.transform.scale(car_opponent_blue, (50, 100))
+    car = pygame.image.load("white_car.png")
+    car = pygame.transform.scale(car, (50, 100))
+    loser = False
+    score = 0
+
+
+start_game()
 
 
 def calcularDeslocamento(start_x_1, end_x_1, start_x_2, end_x_2):
@@ -245,8 +257,8 @@ def build_car():
 def build_car_controls():
     x = 0
     y = 0
+    key = pygame.key.get_pressed()
     if pygame.key.get_focused() and not loser:
-        key = pygame.key.get_pressed()
         half_width = car_rect.width / 2
         half_height = car_rect.height / 2
         # [DONE] manter o carrinho do jogador na tela. Use valores numéricos da tela e das pistas.
@@ -258,6 +270,10 @@ def build_car_controls():
             x -= SPEED
         if key[pygame.K_RIGHT] and (car_rect.centerx + 1 + half_width) < FAIXAS[2][1]:
             x += SPEED
+    else:
+        if key[pygame.K_SPACE]:
+            start_game()
+
     car_rect.move_ip(x, y)
 
 
@@ -280,10 +296,11 @@ def build_score():
     text_surf_p = font_score.render(str(score), True, BLACK)
     SCREEN.blit(text_surf_p, (W_WIDTH - 100, 50))
 
+
 def build_level():
-        SCREEN.blit(font_default.render(str(game_level), True, BLACK), (W_WIDTH - 140, 130))
-        text_level = font_level.render(str(int(LEVEL)), True, BLACK)
-        SCREEN.blit(text_level, (W_WIDTH - 50, 130))
+    SCREEN.blit(font_default.render(str(game_level), True, BLACK), (W_WIDTH - 140, 130))
+    text_level = font_level.render(str(int(LEVEL)), True, BLACK)
+    SCREEN.blit(text_level, (W_WIDTH - 50, 130))
 
 
 def colisao(meu_carro, oponente):
@@ -334,12 +351,13 @@ while True:
     #
     LEVEL = score / LEVEL_FREQ
 
-
     # [DONE] detectar colisao entre o carrinho do jogador e algum carrinho oponente.
     # Em caso de colisão mostrar a mensagem ''Fim de Jogo'' e carregar a imagem
     # de carrinho batido para o carrinho do jogador.
     if captura_colisao():
         SCREEN.blit(font_score.render(str(game_over), True, RED), (50, W_HEIGHT // 4))
+        font_restart.set_italic(True)
+        SCREEN.blit(font_restart.render("Aperte espaço para recomeçar!", True, PURPLE), (80, W_HEIGHT // 4 + 75))
         car = pygame.image.load("white_car_2.png")
         pygame.mixer.music.pause()
         loser = True
