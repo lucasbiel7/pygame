@@ -11,7 +11,7 @@ WHITE = (255, 255, 255)
 RED = (255, 0, 0)
 GREEN = (57, 173, 31)
 GREY = (210, 210, 210)
-PURPLE = (97, 52, 219)
+PURPLE = (20, 38, 64)
 
 SPEED = 5  # velocidade de movimento do carrinho do jogador
 SPEED1 = [0, 2]  # velocidade de movimento do carrinho oponente 1
@@ -36,8 +36,8 @@ clock = pygame.time.Clock()
 
 # define os textos para 'pontos' e mensagem do 'termino' do jogo (não alterar)
 score = 0
-game_over = "GAME OVER"
-game_score = "SCORE"
+game_over = "Fim de Jogo"
+game_score = "PONTUAÇÃO"
 game_level = "LEVEL"
 font_score = pygame.font.Font('freesansbold.ttf', 50)
 font_restart = pygame.font.Font('freesansbold.ttf', 16)
@@ -355,9 +355,9 @@ while True:
     # Em caso de colisão mostrar a mensagem ''Fim de Jogo'' e carregar a imagem
     # de carrinho batido para o carrinho do jogador.
     if captura_colisao():
-        SCREEN.blit(font_score.render(str(game_over), True, RED), (50, W_HEIGHT // 4))
+        SCREEN.blit(font_score.render(str(game_over), True, RED), (95, W_HEIGHT // 3))
         font_restart.set_italic(True)
-        SCREEN.blit(font_restart.render("Aperte espaço para recomeçar!", True, PURPLE), (80, W_HEIGHT // 4 + 75))
+        SCREEN.blit(font_restart.render("APERTE ESPAÇO PARA RECOMEÇAR!", True, PURPLE), (85, W_HEIGHT // 3 + 75))
         car = pygame.image.load("white_car_2.png")
         pygame.mixer.music.pause()
         loser = True
