@@ -36,7 +36,11 @@ clock = pygame.time.Clock()
 # define os textos para 'pontos' e mensagem do 'termino' do jogo (não alterar)
 score = 0
 game_over = "GAME OVER"
+game_score = "SCORE"
+game_level = "LEVEL"
 font_score = pygame.font.Font('freesansbold.ttf', 50)
+font_level = pygame.font.Font('freesansbold.ttf', 25)
+font_default = pygame.font.Font('freesansbold.ttf', 25)
 loser = False
 # [DONE] carregar as imagens dos carrinhos
 car = pygame.image.load("white_car.png")
@@ -75,7 +79,7 @@ pygame.mixer.init()
 pygame.mixer.music.load('top-Gear-Soundtrack.mp3')
 
 # Comentei a música para conseguir ouvir música enquanto desenvolve
-pygame.mixer.music.play()
+# pygame.mixer.music.play()
 
 # Funções para o jogo
 #
@@ -264,8 +268,14 @@ def build_opponents():
 
 
 def build_score():
+    SCREEN.blit(font_default.render(str(game_score), True, BLACK), (W_WIDTH - 140, 20))
     text_surf_p = font_score.render(str(score), True, BLACK)
-    SCREEN.blit(text_surf_p, (W_WIDTH - 100, 20))
+    SCREEN.blit(text_surf_p, (W_WIDTH - 100, 50))
+
+def build_level():
+        SCREEN.blit(font_default.render(str(game_level), True, BLACK), (W_WIDTH - 140, 130))
+        text_level = font_level.render(str(int(LEVEL)), True, BLACK)
+        SCREEN.blit(text_level, (W_WIDTH - 50, 130))
 
 
 def colisao(meu_carro, oponente):
@@ -316,6 +326,7 @@ while True:
     #
     LEVEL = score / LEVEL_FREQ
 
+
     # [DONE] detectar colisao entre o carrinho do jogador e algum carrinho oponente.
     # Em caso de colisão mostrar a mensagem ''Fim de Jogo'' e carregar a imagem
     # de carrinho batido para o carrinho do jogador.
@@ -326,6 +337,7 @@ while True:
         loser = True
     #
     build_score()
+    build_level()
     #
     pygame.display.update()
     clock.tick(FPS)
